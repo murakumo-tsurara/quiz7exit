@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>タイムアタッククイズ</title>
+  <style>
+    body { font-family: sans-serif; padding: 2em; line-height: 1.5; }
+    h2 { margin-top: 2em; }
+    .question { margin-bottom: 1em; }
+    button { margin-top: 2em; font-size: 1.2em; padding: 0.5em 1em; }
+    #result { margin-top: 2em; font-size: 1.2em; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>タイムアタッククイズ</h1>
+  <form id="quizForm">
+
+    <div class="question">
+      <h2>Q1. 日本の首都は？</h2>
+      <label><input type="radio" name="q1" value="東京"> 東京</label><br>
+      <label><input type="radio" name="q1" value="大阪"> 大阪</label><br>
+      <label><input type="radio" name="q1" value="京都"> 京都</label>
+    </div>
+
+    <div class="question">
+      <h2>Q2. 1+1は？</h2>
+      <label><input type="radio" name="q2" value="1"> 1</label><br>
+      <label><input type="radio" name="q2" value="2"> 2</label><br>
+      <label><input type="radio" name="q2" value="3"> 3</label>
+    </div>
+
+    <div class="question">
+      <h2>Q3. 日本で一番高い山は？</h2>
+      <label><input type="radio" name="q3" value="富士山"> 富士山</label><br>
+      <label><input type="radio" name="q3" value="北岳"> 北岳</label><br>
+      <label><input type="radio" name="q3" value="槍ヶ岳"> 槍ヶ岳</label>
+    </div>
+
+    <button type="button" onclick="checkAnswers()">結果を確認</button>
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    // 正解一覧
+    const answers = {
+      q1: "東京",
+      q2: "2",
+      q3: "富士山"
+    };
+
+    const penaltyPerWrong = 10; // 秒数（1問ミスごとに+10秒）
+
+    function checkAnswers() {
+      let wrongCount = 0;
+      let total = Object.keys(answers).length;
+
+      for (const key in answers) {
+        const selected = document.querySelector(`input[name="${key}"]:checked`);
+        if (!selected || selected.value !== answers[key]) {
+          wrongCount++;
+        }
+      }
+
+      const penaltyTime = wrongCount * penaltyPerWrong;
+      const resultDiv = document.getElementById("result");
+
+      resultDiv.innerHTML = `
+        <p>正解数：${total - wrongCount} / ${total}</p>
+        <p>間違い数：${wrongCount}（ペナルティ +${penaltyTime}秒）</p>
+        <p><strong>ゴールに進んでください！</strong></p>
+      `;
+
+      // ↓ ペナルティ秒数を localStorage に記録（あとで使う）
+      localStorage.setItem("penaltyTime", penaltyTime);
+    }
+  </script>
+</body>
+</html>
